@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>信用卡回饋神隊友</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F3F4F6; }
+        /* 隱藏捲軸但保持功能 */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex flex-col">
+
+    <div id="app" class="flex flex-col h-full max-w-md mx-auto bg-white shadow-2xl overflow-hidden relative">
+        
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 shadow-lg z-10">
+            <h1 class="text-2xl font-bold tracking-wide"><i class="fa-solid fa-credit-card mr-2"></i>回饋神隊友</h1>
+            <p class="text-blue-100 text-sm mt-1 opacity-90">台新太陽 x 富邦 J x 國泰 Cube</p>
+        </header>
+
+        <div class="p-4 bg-white border-b border-gray-100 z-10 sticky top-0">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+                <input 
+                    v-model="searchQuery" 
+                    @input="handleInput"
+                    type="text" 
+                    placeholder="輸入店家 (例如: 7-11, Uniqlo)" 
+                    class="w-full pl-10 pr-10 py-3 rounded-xl bg-gray-100 border-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-lg shadow-inner outline-none placeholder-gray-400"
+                >
+                <button v-if="searchQuery" @click="clearSearch" class="absolute right-3 top-2.5 text-gray-400 p-1 hover:text-gray-600">
+                    <i class="fa-solid fa-circle-xmark text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-4 relative">
+            
+            <div v-if="!searchQuery && !selectedMerchant" class="mt-4">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 ml-1">熱門查詢</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button v-for="tag in popularSearches" @click="quickSearch(tag)" class="px-4 py-2 bg-gray-100 rounded-full text-gray-600 text-sm font-medium hover:bg-blue-50 active:bg-blue-100 transition">
+                        {{ tag }}
+                    </button>
+                </div>
+                
+                <div class="mt-12 text-center opacity-40">
+                    <i class="fa-solid fa-store text-6xl mb-4 text-gray-300"></i>
+                    <p>輸入店家名稱開始查詢</p>
+                </div>
+            </div>
+
+            <div v-if="searchQuery && !selectedMerchant" class="space-y-2">
+                <div v-for="m in filteredMerchants" :key="m.name" @click="selectMerchant(m)" 
+                     class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex justify-between items-center group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-shop"></i>
+                        </div>
+                        <span class="font-bold text-lg text-gray-700">{{ m.name }}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-blue-500"></i>
+                </div>
+                
+                <div v-if="filteredMerchants.length === 0" class="text-center mt-10 text-gray-400">
+                    <i class="fa-regular fa-face-frown text-4xl mb-2"></i>
+                    <p>找不到「{{ searchQuery }}」的資料</p>
+                </div>
+            </div>
+
+            <transition name="fade">
+                <div v-if="selectedMerchant">
+                    <button @click="backToSearch" class="mb-4 flex items-center text-gray-500 hover:text-blue-600 transition text-sm font-medium">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> 返回搜尋結果
+                    </button>
+
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">{{ selectedMerchant.name }}</h2>
+                        <span class="inline-block mt-1 px-3 py-1 bg-gray-200 rounded-full text-xs text-gray-600">
+                            {{ selectedMerchant.category }}
+                        </span>
+                    </div>
+
+                    <div class="space-y-4 pb-10">
+                        <div v-for="(card, index) in sortedRewards" :key="index" 
+                             class="bg-white rounded-2xl p-5 shadow-md border-l-4 relative overflow-hidden transition-transform transform hover:-translate-y-1"
+                             :class="getCardColorClass(card.cardName)">
+                            
+                            <div v-if="index === 0" class="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-3 py-1 rounded-bl-xl shadow-sm">
+                                <i class="fa-solid fa-crown mr-1"></i>首選
+                            </div>
+
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-lg" :class="getTextColorClass(card.cardName)">{{ card.cardName }}</h3>
+                                    
+                                    <div class="mt-2 flex flex-col gap-1.5 items-start">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                            <i class="fa-solid fa-sliders mr-1.5 text-gray-400"></i>
+                                            {{ card.plan }}
+                                        </span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium" 
+                                              :class="card.method.includes('Line') ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'">
+                                            <i class="fa-solid fa-wallet mr-1.5 opacity-60"></i>
+                                            {{ card.method }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="text-4xl font-extrabold tracking-tighter" :class="getRateColorClass(card.cardName)">
+                                        {{ card.rate }}<span class="text-xl">%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-1">點數/現金回饋</p>
+                                </div>
+                            </div>
+                            
+                            <div v-if="card.note" class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500 flex items-start">
+                                <i class="fa-solid fa-circle-info mt-0.5 mr-1.5 text-blue-400"></i>
+                                {{ card.note }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    searchQuery: '',
+                    selectedMerchant: null,
+                    popularSearches: ['7-11', '全家', '麥當勞', 'Uniqlo', '高鐵', 'Uber Eats'],
+                    
+                    // ==========================================
+                    // 核心資料庫：在此處新增或修改店家資料
+                    // ==========================================
+                    merchants: [
+                        {
+                            name: "7-ELEVEN",
+                            category: "超商",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡/ICASH/Open錢包", rate: 3.0, note: "需切換權益至[集精選]" },
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新 Pay", rate: 3.8, note: "需使用台新 Pay 綁定並選天天刷" },
+                                { cardName: "富邦 J 卡", plan: "一般消費", method: "Line Pay", rate: 1.0, note: "超商非一般消費，J卡回饋通常較低" }
+                            ]
+                        },
+                        {
+                            name: "全家便利商店",
+                            category: "超商",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡/My FamiPay", rate: 3.0, note: "需切換權益至[集精選]" },
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新 Pay", rate: 3.8, note: "需使用台新 Pay 綁定" },
+                                { cardName: "富邦 J 卡", plan: "一般消費", method: "Line Pay", rate: 1.0, note: "回饋極低，不建議使用" }
+                            ]
+                        },
+                        {
+                            name: "Uniqlo",
+                            category: "服飾",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡/一般刷卡", rate: 3.0, note: "需切換權益至[樂饗購]" },
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體卡", rate: 3.8, note: "指定百貨Outlet內可能不適用" },
+                                { cardName: "富邦 J 卡", plan: "日韓旅遊", method: "日本實體消費", rate: 3.0, note: "台灣店面僅一般回饋約 1%" }
+                            ]
+                        },
+                        {
+                            name: "麥當勞",
+                            category: "餐飲",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "一般消費", method: "Line Pay", rate: 3.0, note: "需綁定 Line Pay" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.0, note: "需切換至[集精選]" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路，回饋低" }
+                            ]
+                        },
+                        {
+                            name: "Uber Eats",
+                            category: "外送",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "APP 綁定", rate: 3.0, note: "需切換至[樂饗購]" },
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "APP 綁定", rate: 3.8, note: "需選天天刷方案" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP 綁定", rate: 1.0, note: "無特別加碼" }
+                            ]
+                        },
+                        {
+                            name: "台灣高鐵",
+                            category: "交通",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "官網/APP", rate: 3.8, note: "需選天天刷方案" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網/APP", rate: 3.0, note: "需切換至[趣旅行]" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP", rate: 1.0, note: "一般回饋" }
+                            ]
+                        },
+                        {
+                            name: "中油 (直營)",
+                            category: "加油",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體卡", rate: 3.8, note: "需選天天刷方案" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.0, note: "需切換至[集精選]" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "部分站點支援 Line Pay" }
+                            ]
+                        }
+                    ]
+                }
+            },
+            computed: {
+                filteredMerchants() {
+                    if (!this.searchQuery) return [];
+                    const query = this.searchQuery.toLowerCase();
+                    return this.merchants.filter(m => 
+                        m.name.toLowerCase().includes(query)
+                    );
+                },
+                sortedRewards() {
+                    if (!this.selectedMerchant) return [];
+                    // 這裡執行排序：回饋率由高到低
+                    return [...this.selectedMerchant.rewards].sort((a, b) => b.rate - a.rate);
+                }
+            },
+            methods: {
+                handleInput() {
+                    this.selectedMerchant = null; // 搜尋時重置選擇結果
+                },
+                quickSearch(term) {
+                    this.searchQuery = term;
+                    this.selectedMerchant = null;
+                },
+                selectMerchant(merchant) {
+                    this.selectedMerchant = merchant;
+                },
+                backToSearch() {
+                    this.selectedMerchant = null;
+                },
+                clearSearch() {
+                    this.searchQuery = '';
+                    this.selectedMerchant = null;
+                },
+                // 以下是樣式輔助函數
+                getCardColorClass(cardName) {
+                    if (cardName.includes("Cube")) return "border-green-500";
+                    if (cardName.includes("台新")) return "border-red-500";
+                    if (cardName.includes("富邦")) return "border-blue-500";
+                    return "border-gray-300";
+                },
+                getTextColorClass(cardName) {
+                    if (cardName.includes("Cube")) return "text-green-700";
+                    if (cardName.includes("台新")) return "text-red-700";
+                    if (cardName.includes("富邦")) return "text-blue-700";
+                    return "text-gray-700";
+                },
+                getRateColorClass(cardName) {
+                    if (cardName.includes("Cube")) return "text-green-600";
+                    if (cardName.includes("台新")) return "text-red-600";
+                    if (cardName.includes("富邦")) return "text-blue-600";
+                    return "text-gray-600";
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
