@@ -3,51 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>信用卡回饋神隊友 (清新版)</title>
+    <title>信用卡回饋神隊友 (修正版)</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 清新主題變數 */
         :root {
-            --fresh-bg: #F8FAFC;       /* 極淡的冷灰背景 */
+            --fresh-bg: #F8FAFC;
             --fresh-white: #FFFFFF;
-            --fresh-text: #475569;     /* 柔和的石板灰文字 */
-            --fresh-primary: #0EA5E9;  /* 天空藍 */
+            --fresh-text: #475569;
         }
         
         body { 
             font-family: 'DM Sans', 'Noto Sans TC', sans-serif; 
             background-color: var(--fresh-bg); 
             color: var(--fresh-text);
-            letter-spacing: 0.05em; /* 全局增加字距，製造呼吸感 */
+            letter-spacing: 0.05em;
+            /* 修正1: 確保手機上高度正確 */
+            height: 100dvh; 
+            overflow: hidden;
         }
         
-        /* 隱藏捲軸 */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* 過場動畫 */
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
         .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(10px); }
 
-        /* 特殊數字字體 */
         .rate-number { font-family: 'DM Sans', sans-serif; letter-spacing: -0.02em; }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body>
 
-    <div id="app" class="flex flex-col h-full max-w-md mx-auto bg-[var(--fresh-bg)] shadow-2xl overflow-hidden relative">
+    <div id="app" class="flex flex-col h-[100dvh] max-w-md mx-auto bg-[var(--fresh-bg)] shadow-2xl relative">
         
-        <header class="bg-white pt-8 pb-4 px-6 z-10 sticky top-0">
+        <header class="bg-white pt-8 pb-4 px-6 z-30 sticky top-0 border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)]">
             <div class="flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl font-bold tracking-widest text-slate-800">
                         <i class="fa-solid fa-credit-card text-teal-400 mr-2"></i>回饋查詢
                     </h1>
-                    <p class="text-slate-400 text-xs mt-2 tracking-widest font-medium uppercase">Taipei Fubon • Cathay • Taishin</p>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
                     <i class="fa-solid fa-user text-slate-300"></i>
@@ -55,7 +52,7 @@
             </div>
         </header>
 
-        <div class="px-6 pb-2 bg-white z-10 border-b border-slate-50">
+        <div class="px-6 py-4 bg-white z-20 border-b border-slate-50 shadow-sm">
             <div class="relative group">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-slate-300 group-focus-within:text-teal-400 transition-colors"></i>
                 <input 
@@ -63,7 +60,7 @@
                     @input="handleInput"
                     type="text" 
                     placeholder="輸入店家或國家..." 
-                    class="w-full pl-12 pr-10 py-4 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-teal-100 focus:ring-4 focus:ring-teal-50/50 transition-all text-slate-600 outline-none placeholder-slate-300 tracking-wide"
+                    class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-teal-100 focus:ring-4 focus:ring-teal-50/50 transition-all text-slate-600 outline-none placeholder-slate-300 tracking-wide text-base"
                 >
                 <button v-if="searchQuery" @click="clearSearch" class="absolute right-4 top-4 text-slate-300 p-1 hover:text-slate-500">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -71,7 +68,7 @@
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto hide-scrollbar p-6 relative">
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-6 pb-32 relative z-0">
             
             <div v-if="!searchQuery && !selectedMerchant" class="mt-4">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.15em] mb-4 ml-1">Popular Search</h3>
@@ -81,30 +78,23 @@
                         {{ tag }}
                     </button>
                 </div>
-                
-                <div class="mt-20 text-center opacity-40">
-                    <div class="w-24 h-24 bg-slate-100 rounded-full mx-auto flex items-center justify-center mb-6">
-                        <i class="fa-regular fa-compass text-4xl text-slate-300"></i>
-                    </div>
-                    <p class="text-sm font-light tracking-widest text-slate-400">探索最優回饋方案</p>
-                </div>
             </div>
 
             <div v-if="searchQuery && !selectedMerchant" class="space-y-4">
                 <div v-for="m in filteredMerchants" :key="m.name" @click="selectMerchant(m)" 
                      class="bg-white p-5 rounded-2xl shadow-[0_2px_15px_-4px_rgba(203,213,225,0.3)] hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer flex justify-between items-center group border border-slate-50">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg transition-colors" 
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center text-lg transition-colors" 
                              :class="m.category.includes('國外') ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'">
                             <i v-if="m.category.includes('國外')" class="fa-solid fa-plane"></i>
                             <i v-else class="fa-solid fa-store"></i>
                         </div>
-                        <div>
-                            <span class="font-bold text-lg text-slate-700 block mb-0.5">{{ m.name }}</span>
-                            <span class="text-xs text-slate-400 font-light tracking-wide">{{ m.category }}</span>
+                        <div class="min-w-0">
+                            <span class="font-bold text-lg text-slate-700 block mb-0.5 truncate">{{ m.name }}</span>
+                            <span class="text-xs text-slate-400 font-light tracking-wide truncate block">{{ m.category }}</span>
                         </div>
                     </div>
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 text-slate-300 group-hover:bg-teal-400 group-hover:text-white transition-all">
+                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-slate-50 text-slate-300 group-hover:bg-teal-400 group-hover:text-white transition-all">
                         <i class="fa-solid fa-arrow-right text-sm"></i>
                     </div>
                 </div>
@@ -124,10 +114,10 @@
                         <span class="text-teal-500 text-xs font-bold tracking-[0.15em] uppercase bg-teal-50 px-3 py-1 rounded-full mb-3 inline-block">
                             Current Location
                         </span>
-                        <h2 class="text-3xl font-bold text-slate-800 tracking-wide">{{ selectedMerchant.name }}</h2>
+                        <h2 class="text-3xl font-bold text-slate-800 tracking-wide break-words leading-tight">{{ selectedMerchant.name }}</h2>
                     </div>
 
-                    <div class="space-y-5 pb-12">
+                    <div class="space-y-5">
                         <div v-for="(card, index) in sortedRewards" :key="index" 
                              class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_-6px_rgba(203,213,225,0.3)] relative overflow-hidden transition-all border border-slate-50"
                              :class="{'ring-2 ring-yellow-100 ring-offset-2': index === 0}">
@@ -142,7 +132,7 @@
                                     <h3 class="font-bold text-lg flex items-center tracking-wide" :class="getTextColorClass(card.cardName)">
                                         {{ card.cardName }}
                                     </h3>
-                                    <div class="text-right">
+                                    <div class="text-right flex-shrink-0">
                                         <div class="rate-number text-5xl font-bold leading-none tracking-tight" :class="getRateColorClass(card.cardName)">
                                             {{ card.rate }}<span class="text-2xl font-medium ml-1 text-slate-400">%</span>
                                         </div>
@@ -154,21 +144,21 @@
                                 <div class="flex flex-wrap gap-3">
                                     <div class="flex flex-col gap-1">
                                         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold ml-1">Plan</span>
-                                        <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-slate-50 text-slate-600">
+                                        <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-slate-50 text-slate-600 whitespace-nowrap">
                                             {{ card.plan }}
                                         </span>
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold ml-1">Method</span>
-                                        <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium" 
+                                        <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap" 
                                               :class="getMethodTagClass(card.method)">
                                             {{ card.method }}
                                         </span>
                                     </div>
                                 </div>
 
-                                <div v-if="card.note" class="mt-2 flex items-start gap-2 text-xs text-slate-400 font-light leading-relaxed">
-                                    <i class="fa-solid fa-circle-info mt-0.5 text-slate-300"></i>
+                                <div v-if="card.note" class="mt-2 flex items-start gap-2 text-xs text-slate-400 font-light leading-relaxed break-words">
+                                    <i class="fa-solid fa-circle-info mt-0.5 text-slate-300 flex-shrink-0"></i>
                                     <span>{{ card.note }}</span>
                                 </div>
                             </div>
@@ -191,7 +181,6 @@
                     popularSearches: ['日本', '國外', '7-11', '麥當勞', 'Uniqlo', '高鐵'],
                     
                     merchants: [
-                        // 資料結構維持不變
                         {
                             name: "🇯🇵🇰🇷 日本/韓國實體",
                             category: "國外旅遊",
@@ -287,7 +276,6 @@
                 backToSearch() { this.selectedMerchant = null; },
                 clearSearch() { this.searchQuery = ''; this.selectedMerchant = null; },
                 
-                // === 樣式輔助函數 (清新版配色) ===
                 getTextColorClass(cardName) {
                     if (cardName.includes("Cube")) return "text-emerald-600";
                     if (cardName.includes("台新")) return "text-rose-500";
@@ -295,14 +283,12 @@
                     return "text-slate-600";
                 },
                 getRateColorClass(cardName) {
-                    // 數字顏色保持鮮豔，但在淺色背景上更易讀
                     if (cardName.includes("Cube")) return "text-emerald-500";
                     if (cardName.includes("台新")) return "text-rose-500";
                     if (cardName.includes("富邦")) return "text-blue-500";
                     return "text-slate-400";
                 },
                 getMethodTagClass(method) {
-                    // Tag 改為淡淡的背景色
                     if (method.includes("Line") || method.includes("Pay")) return "bg-emerald-50 text-emerald-600";
                     if (method.includes("實體") && (method.includes("日") || method.includes("韓"))) return "bg-blue-50 text-blue-600";
                     return "bg-slate-100 text-slate-500";
