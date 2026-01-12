@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>信用卡回饋神隊友 (超商補完版)</title>
+    <title>信用卡回饋神隊友</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -50,7 +50,7 @@
                     v-model="searchQuery" 
                     @input="handleInput"
                     type="text" 
-                    placeholder="輸入關鍵字 (例: 7-11, 全家, 日本...)" 
+                    placeholder="輸入關鍵字 (例: 屈臣氏, 蝦皮, 星宇...)" 
                     class="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-teal-200 focus:ring-2 focus:ring-teal-50 transition-all text-slate-700 outline-none placeholder-slate-400 text-base"
                 >
                 <button v-if="searchQuery" @click="clearSearch" class="absolute right-3 top-3.5 text-slate-300 p-1 hover:text-slate-500">
@@ -157,38 +157,152 @@
                 return {
                     searchQuery: '',
                     selectedMerchant: null,
-                    popularSearches: ['7-11', '全家', '新光三越', '星宇', '日本'],
+                    popularSearches: ['屈臣氏', '蝦皮', '日本', '新光三越', '星宇', '全聯'],
                     
                     // ==========================================
-                    // 旗艦版資料庫：全獨立、海量資料
+                    // 終極完全體資料庫
                     // ==========================================
                     merchants: [
-                        // --- 便利商店 (新!) ---
+                        // --- 藥妝 (新!) ---
+                        {
+                            name: "Watsons 屈臣氏",
+                            category: "藥妝店",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "請切換至 [天天刷] 並綁定台新Pay支付 (或一般3.3%)。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "COSMED 康是美",
+                            category: "藥妝店",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "請切換至 [天天刷] 並綁定台新Pay支付。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "POYA 寶雅",
+                            category: "藥妝店",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體卡", rate: 3.3, note: "請切換至 [天天刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Tomod's 特美事",
+                            category: "藥妝店",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
+                            ]
+                        },
+                        {
+                            name: "Daikoku / 松本清 (日本)",
+                            category: "國外旅遊",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "日韓", method: "當地實體", rate: 3.0, note: "日本當地藥妝店享 3%。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "實體卡", rate: 3.0, note: "需切換至 [趣旅行] (海外消費)。" },
+                                { cardName: "台新玫瑰太陽", plan: "海外", method: "實體卡", rate: 2.5, note: "需扣除手續費。" }
+                            ]
+                        },
+
+                        // --- 國內電商 (新!) ---
+                        {
+                            name: "Shopee 蝦皮購物",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案 (非天天刷)。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 3.3, note: "需切換至 [玩數位] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "線上刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "momo 購物網",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 3.3, note: "需切換至 [玩數位] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "momo卡", rate: 1.0, note: "建議使用 momo 聯名卡。" }
+                            ]
+                        },
+                        {
+                            name: "PChome 24h",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 3.3, note: "需切換至 [玩數位] 方案。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Yahoo 奇摩購物",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 0.3, note: "Yahoo 不在 [玩數位] 名單中 (小樹購除外)。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+
+                        // --- 境外電商 ---
+                        {
+                            name: "Coupang 酷澎 (台灣)",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "APP刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "APP刷卡", rate: 3.3, note: "需切換至 [玩數位]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Taobao / Tmall 淘寶/天貓",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上刷卡", rate: 3.3, note: "注意：需切換至 [數趣刷] 方案 (含海外消費)。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 3.3, note: "需切換至 [玩數位]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "非日韓地區回饋低。" }
+                            ]
+                        },
+                        {
+                            name: "Amazon 亞馬遜",
+                            category: "網購平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "線上", rate: 3.3, note: "需切換至 [數趣刷]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上", rate: 3.0, note: "海外消費切換 [趣旅行]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+
+                        // --- 便利商店 ---
                         {
                             name: "7-ELEVEN",
                             category: "便利商店",
                             rewards: [
-                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "注意！必須綁定「台新Pay」掃碼支付，刷實體卡僅 0.3%。" },
-                                { cardName: "國泰 Cube", plan: "集精選", method: "OPEN錢包/ICASH", rate: 3.0, note: "需切換至 [集精選]。" },
-                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商大多排除在回饋之外，或回饋極低。" }
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必綁「台新Pay」掃碼支付，實體卡僅 0.3%。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "OPEN/ICASH", rate: 3.3, note: "需切換至 [集精選] 並綁定指定支付。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商通常排除在回饋外。" }
                             ]
                         },
                         {
                             name: "FamilyMart 全家便利商店",
                             category: "便利商店",
                             rewards: [
-                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "注意！必須綁定「台新Pay」掃碼支付，刷實體卡僅 0.3%。" },
-                                { cardName: "國泰 Cube", plan: "集精選", method: "FamiPay", rate: 3.0, note: "需切換至 [集精選]。" },
-                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商大多排除在回饋之外。" }
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必綁「台新Pay」掃碼支付，實體卡僅 0.3%。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "FamiPay", rate: 3.3, note: "需切換至 [集精選]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商通常排除在回饋外。" }
                             ]
                         },
                         {
                             name: "Hi-Life 萊爾富",
                             category: "便利商店",
                             rewards: [
-                                { cardName: "富邦 J 卡", plan: "一般", method: "HiPay", rate: 0, note: "一般消費排除超商，建議使用其他支付工具。" },
-                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "萊爾富不在 [集精選] 名單中，僅一般回饋。" },
-                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "萊爾富不在 [天天刷] 名單中，僅一般回饋。" }
+                                { cardName: "富邦 J 卡", plan: "一般", method: "HiPay", rate: 0, note: "一般消費排除超商。" },
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
                             ]
                         },
                         {
@@ -196,8 +310,8 @@
                             category: "便利商店",
                             rewards: [
                                 { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商不列入一般回饋。" },
-                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "OK超商不在 [集精選] 名單中。" },
-                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "OK超商不在 [天天刷] 名單中。" }
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
                             ]
                         },
 
@@ -207,7 +321,7 @@
                             category: "電影院",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "權益折扣", method: "實體/APP", rate: 0, note: "重點是折扣！平日刷卡 6 折起，假日 85 折 (需依當期活動)。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "無票價折扣，僅 3% 回饋。需切換至 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "無票價折扣，僅 3.3% 回饋。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -216,7 +330,16 @@
                             category: "電影院",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "權益折扣", method: "實體/APP", rate: 0, note: "平日購票 7 折起 (依卡別等級而定)。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "無票價折扣，僅 3% 回饋。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "僅 3.3% 回饋。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Ambassador 國賓影城",
+                            category: "電影院",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購]。" },
+                                { cardName: "台新玫瑰太陽", plan: "權益折扣", method: "實體", rate: 0, note: "平假日票價優惠 (依活動公告)。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -227,7 +350,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "注意：請切換至 [大筆刷] 方案 (非天天刷)。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -236,7 +359,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "注意：請切換至 [大筆刷] 方案。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -245,7 +368,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "注意：請切換至 [大筆刷] 方案。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -254,7 +377,7 @@
                             category: "廉價航空",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "注意：請切換至 [大筆刷] 方案。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -266,7 +389,7 @@
                             rewards: [
                                 { cardName: "富邦 J 卡", plan: "日韓", method: "官網/日本", rate: 3.0, note: "若官網請款地為日本(日幣)享 3%，若為台幣則 1%。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" }
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" }
                             ]
                         },
                         {
@@ -275,7 +398,7 @@
                             rewards: [
                                 { cardName: "富邦 J 卡", plan: "日韓", method: "官網/日本", rate: 3.0, note: "若請款幣別為日幣享 3%。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" }
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" }
                             ]
                         },
                         {
@@ -283,7 +406,7 @@
                             category: "廉價航空",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般/日韓", method: "官網", rate: 1.0, note: "視結帳幣別而定，通常為一般回饋。" }
                             ]
                         },
@@ -293,17 +416,17 @@
                             rewards: [
                                 { cardName: "富邦 J 卡", plan: "日韓", method: "官網/韓國", rate: 3.0, note: "若請款幣別為韓圜享 3%。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" }
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" }
                             ]
                         },
 
-                        // --- 其他外籍航空 ---
+                        // --- 外籍航空 ---
                         {
                             name: "Cathay Pacific 國泰航空",
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -312,7 +435,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -321,7 +444,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -330,7 +453,7 @@
                             category: "航空公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -339,7 +462,7 @@
                             category: "廉價航空",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -348,7 +471,7 @@
                             category: "廉價航空",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "官網購票", rate: 3.8, note: "需切換至 [大筆刷]。" },
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網購票", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "官網購票", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -358,7 +481,7 @@
                             name: "Agoda",
                             category: "訂房網",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "Agoda為大筆刷指定通路，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "日韓/一般", method: "線上", rate: 3.0, note: "若預訂日韓飯店且幣別正確享3%，否則1%。" }
                             ]
@@ -367,7 +490,7 @@
                             name: "Booking.com",
                             category: "訂房網",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "指定訂房網，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -376,7 +499,7 @@
                             name: "Airbnb",
                             category: "訂房網",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "注意：Airbnb通常算海外交易，建議用 [大筆刷] 或海外方案。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "日韓以外一般回饋。" }
                             ]
@@ -385,7 +508,7 @@
                             name: "Klook 客路",
                             category: "旅遊體驗",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "Klook 為指定通路，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "日韓", method: "線上", rate: 3.0, note: "購買日韓商品且J卡有活動時享高回饋，否則1%。" }
                             ]
@@ -394,7 +517,7 @@
                             name: "KKday",
                             category: "旅遊體驗",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "KKday 為指定通路，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -403,7 +526,7 @@
                             name: "Trip.com",
                             category: "訂房機票",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "指定通路，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -412,29 +535,9 @@
                             name: "ezTravel 易遊網",
                             category: "旅行社",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.0, note: "需切換至 [趣旅行]。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "線上刷卡", rate: 3.3, note: "需切換至 [趣旅行]。" },
                                 { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "線上刷卡", rate: 3.8, note: "指定旅行社，請切換至 [大筆刷]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "一般回饋。" }
-                            ]
-                        },
-
-                        // --- 境外電商 ---
-                        {
-                            name: "Coupang 酷澎 (台灣)",
-                            category: "網購平台",
-                            rewards: [
-                                { cardName: "國泰 Cube", plan: "玩數位", method: "APP刷卡", rate: 3.0, note: "需切換至 [玩數位]。" },
-                                { cardName: "富邦 J 卡", plan: "一般", method: "APP刷卡", rate: 1.0, note: "酷澎台灣刷卡通常視為國內一般消費。" },
-                                { cardName: "台新玫瑰太陽", plan: "一般", method: "APP刷卡", rate: 0.3, note: "非指定通路 (除非是火箭跨境且判定為海外)。" }
-                            ]
-                        },
-                        {
-                            name: "Taobao / Tmall 淘寶/天貓",
-                            category: "網購平台",
-                            rewards: [
-                                { cardName: "國泰 Cube", plan: "玩數位", method: "線上刷卡", rate: 3.0, note: "需切換至 [玩數位]。" },
-                                { cardName: "台新玫瑰太陽", plan: "海外", method: "線上刷卡", rate: 2.5, note: "視為海外交易，請切換至 [海外] 或大筆刷(若有)。需扣手續費。" },
-                                { cardName: "富邦 J 卡", plan: "一般", method: "線上", rate: 1.0, note: "非日韓地區回饋低。" }
                             ]
                         },
 
@@ -443,7 +546,7 @@
                             name: "Carrefour 家樂福",
                             category: "超市量販",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.0, note: "需切換至 [集精選]。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.3, note: "需切換至 [集精選]。" },
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "需綁定台新 Pay。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -454,7 +557,7 @@
                             rewards: [
                                 { cardName: "富邦 J 卡", plan: "一般", method: "實體卡", rate: 1.0, note: "LOPIA 僅收現金或少數信用卡(如聯名)，J卡視同一般消費。" },
                                 { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" },
-                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體卡", rate: 3.3, note: "需切換至 [天天刷]。" }
                             ]
                         },
                         {
@@ -475,14 +578,32 @@
                                 { cardName: "台新玫瑰太陽", plan: "X", method: "X", rate: 0, note: "僅限富邦 Costco 聯名卡。" }
                             ]
                         },
+                        {
+                            name: "RT-Mart 大潤發",
+                            category: "超市量販",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "需綁定台新Pay，或實體卡享天天刷優惠(需確認)。" },
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路 (以前有現在取消)。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Don Don Donki 唐吉訶德",
+                            category: "超市量販",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體卡", rate: 3.3, note: "需切換至 [天天刷]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 0.3, note: "非指定通路 (除非位於百貨內)。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
 
-                        // --- 獨立分開的百貨 ---
+                        // --- 百貨 ---
                         {
                             name: "Shin Kong Mitsukoshi 新光三越",
                             category: "百貨公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -490,7 +611,7 @@
                             name: "SOGO 遠東SOGO",
                             category: "百貨公司",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -499,7 +620,7 @@
                             name: "Far Eastern 遠東百貨 (大遠百)",
                             category: "百貨公司",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -509,7 +630,7 @@
                             category: "百貨公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -518,7 +639,7 @@
                             category: "百貨公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -527,7 +648,7 @@
                             category: "百貨公司",
                             rewards: [
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
                         },
@@ -535,7 +656,7 @@
                             name: "Big City 遠東巨城",
                             category: "百貨公司",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
                             ]
@@ -544,9 +665,186 @@
                             name: "Focus 時尚流行館 (台南)",
                             category: "百貨公司",
                             rewards: [
-                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.0, note: "切換 [樂饗購]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "綁定 Line Pay。" },
                                 { cardName: "台新玫瑰太陽", plan: "一般", method: "刷卡", rate: 0.3, note: "非指定通路。" }
+                            ]
+                        },
+                        {
+                            name: "Global Mall 環球購物中心",
+                            category: "百貨公司",
+                            rewards: [
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "必用台新Pay。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Mitsui Outlet Park 三井",
+                            category: "百貨公司",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "實體卡", rate: 3.3, note: "Outlet 屬 [大筆刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "LaLaport",
+                            category: "百貨公司",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "實體卡", rate: 3.3, note: "屬 [大筆刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Dream Mall 夢時代",
+                            category: "百貨公司",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "大筆刷", method: "實體卡", rate: 3.3, note: "屬 [大筆刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "刷卡", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+
+                        // --- 餐飲/外送 ---
+                        {
+                            name: "Uber Eats",
+                            category: "外送平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "好饗刷", method: "APP綁定", rate: 3.8, note: "切換至 [好饗刷]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "APP綁定", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP綁定", rate: 1.0, note: "無特別加碼。" }
+                            ]
+                        },
+                        {
+                            name: "Foodpanda",
+                            category: "外送平台",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "好饗刷", method: "APP綁定", rate: 3.8, note: "切換至 [好饗刷]。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "APP綁定", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP綁定", rate: 1.0, note: "無特別加碼。" }
+                            ]
+                        },
+                        {
+                            name: "Starbucks 星巴克",
+                            category: "餐飲咖啡",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體/APP", rate: 3.8, note: "列入天天刷指定通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體/APP", rate: 3.3, note: "需切換至 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 3.0, note: "J卡部分餐飲有加碼，需綁 Line Pay。" }
+                            ]
+                        },
+                        {
+                            name: "Louisa 路易莎",
+                            category: "餐飲咖啡",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體", rate: 3.8, note: "列入天天刷指定通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體", rate: 3.3, note: "需切換至 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 3.0, note: "需綁 Line Pay。" }
+                            ]
+                        },
+                        {
+                            name: "McDonald's 麥當勞",
+                            category: "速食餐飲",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 3.0, note: "需綁定 Line Pay。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.3, note: "需切換至 [集精選] (僅限麥當勞)。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
+                            ]
+                        },
+
+                        // --- 交通 ---
+                        {
+                            name: "Taiwan High Speed Rail 高鐵",
+                            category: "交通運輸",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "官網/APP", rate: 3.8, note: "需選天天刷方案。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "官網/APP", rate: 3.3, note: "需切換至 [趣旅行]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "TRA 台鐵",
+                            category: "交通運輸",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "實體/APP", rate: 3.8, note: "需選天天刷方案。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "APP", rate: 0.3, note: "台鐵通常不列入趣旅行 (高鐵才有)。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Uber (乘車)",
+                            category: "交通計程車",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "APP綁定", rate: 3.8, note: "需選天天刷方案。" },
+                                { cardName: "國泰 Cube", plan: "趣旅行", method: "APP綁定", rate: 3.3, note: "需切換至 [趣旅行]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "APP", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "CPC 台灣中油 (直營)",
+                            category: "加油交通",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "好饗刷", method: "實體/台新Pay", rate: 3.8, note: "注意！加油已改至 [好饗刷] 方案。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "實體卡", rate: 3.3, note: "需切換至 [集精選]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "需該站點支援 Line Pay。" }
+                            ]
+                        },
+
+                        // --- 生活/3C/家居 ---
+                        {
+                            name: "IKEA 宜家家居",
+                            category: "家居傢俱",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新 Pay", rate: 3.8, note: "需綁定台新Pay。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體卡", rate: 3.3, note: "需切換至 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Uniqlo",
+                            category: "生活服飾",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "數趣刷", method: "實體", rate: 3.3, note: "Uniqlo 屬 [數趣刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體", rate: 3.3, note: "切換 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Apple 直營店/官網",
+                            category: "3C家電",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" },
+                                { cardName: "國泰 Cube", plan: "玩數位", method: "Apple Pay", rate: 0.3, note: "Apple直營店被排除在玩數位之外，僅0.3%。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體", rate: 0.3, note: "無特別回饋。" }
+                            ]
+                        },
+                        {
+                            name: "TK3C 燦坤 / 全國電子",
+                            category: "3C家電",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "Pay著刷", method: "台灣Pay", rate: 3.8, note: "綁定台灣Pay享 3.8% (需確認當期活動)。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" },
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "非指定通路。" }
+                            ]
+                        },
+                        {
+                            name: "Holiday KTV 好樂迪",
+                            category: "KTV娛樂",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "好饗刷", method: "實體", rate: 3.8, note: "KTV 屬 [好饗刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體", rate: 3.3, note: "切換至 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Partyworld 錢櫃",
+                            category: "KTV娛樂",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "好饗刷", method: "實體", rate: 3.8, note: "KTV 屬 [好饗刷] 通路。" },
+                                { cardName: "國泰 Cube", plan: "樂饗購", method: "實體", rate: 3.3, note: "切換至 [樂饗購]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 1.0, note: "一般回饋。" }
                             ]
                         }
                     ]
@@ -576,16 +874,21 @@
                     if (category.includes('國外') || category.includes('航空')) return 'fa-solid fa-plane';
                     if (category.includes('廉價航空')) return 'fa-solid fa-plane-slash';
                     if (category.includes('網購') || category.includes('訂房')) return 'fa-solid fa-laptop';
-                    if (category.includes('電影')) return 'fa-solid fa-film';
-                    if (category.includes('超市') || category.includes('便利商店')) return 'fa-solid fa-basket-shopping';
+                    if (category.includes('電影') || category.includes('KTV')) return 'fa-solid fa-film';
+                    if (category.includes('超市') || category.includes('便利商店') || category.includes('藥妝')) return 'fa-solid fa-basket-shopping';
                     if (category.includes('百貨')) return 'fa-solid fa-bag-shopping';
+                    if (category.includes('餐飲') || category.includes('外送')) return 'fa-solid fa-mug-hot';
+                    if (category.includes('交通') || category.includes('加油')) return 'fa-solid fa-car';
                     return 'fa-solid fa-store';
                 },
                 getIconColor(category) {
                     if (category.includes('航空')) return 'bg-sky-50 text-sky-500';
                     if (category.includes('網購')) return 'bg-indigo-50 text-indigo-500';
-                    if (category.includes('電影')) return 'bg-pink-50 text-pink-500';
+                    if (category.includes('電影') || category.includes('KTV')) return 'bg-pink-50 text-pink-500';
                     if (category.includes('百貨')) return 'bg-purple-50 text-purple-500';
+                    if (category.includes('藥妝')) return 'bg-red-50 text-red-500';
+                    if (category.includes('餐飲')) return 'bg-orange-50 text-orange-500';
+                    if (category.includes('交通')) return 'bg-yellow-50 text-yellow-600';
                     return 'bg-slate-100 text-slate-500';
                 },
                 getTextColorClass(cardName) {
@@ -601,7 +904,7 @@
                     return "text-slate-400";
                 },
                 getMethodTagClass(method) {
-                    if (method.includes("Pay") || method.includes("APP")) return "bg-green-50 text-green-600 border-green-100";
+                    if (method.includes("Pay") || method.includes("APP") || method.includes("綁定")) return "bg-green-50 text-green-600 border-green-100";
                     if (method.includes("官網") || method.includes("線上")) return "bg-blue-50 text-blue-600 border-blue-100";
                     if (method === "X") return "bg-red-50 text-red-500 border-red-100";
                     return "bg-slate-50 text-slate-500 border-slate-200";
