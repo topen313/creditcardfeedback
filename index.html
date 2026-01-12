@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>信用卡回饋神隊友 (旗艦完全版)</title>
+    <title>信用卡回饋神隊友 (超商補完版)</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -50,7 +50,7 @@
                     v-model="searchQuery" 
                     @input="handleInput"
                     type="text" 
-                    placeholder="輸入關鍵字 (例: 星宇, 新光, Agoda...)" 
+                    placeholder="輸入關鍵字 (例: 7-11, 全家, 日本...)" 
                     class="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-teal-200 focus:ring-2 focus:ring-teal-50 transition-all text-slate-700 outline-none placeholder-slate-400 text-base"
                 >
                 <button v-if="searchQuery" @click="clearSearch" class="absolute right-3 top-3.5 text-slate-300 p-1 hover:text-slate-500">
@@ -157,13 +157,51 @@
                 return {
                     searchQuery: '',
                     selectedMerchant: null,
-                    popularSearches: ['新光影城', '星宇', 'Coupang', '新光三越', '日本', '全聯'],
+                    popularSearches: ['7-11', '全家', '新光三越', '星宇', '日本'],
                     
                     // ==========================================
                     // 旗艦版資料庫：全獨立、海量資料
                     // ==========================================
                     merchants: [
-                        // --- 影城 (新!) ---
+                        // --- 便利商店 (新!) ---
+                        {
+                            name: "7-ELEVEN",
+                            category: "便利商店",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "注意！必須綁定「台新Pay」掃碼支付，刷實體卡僅 0.3%。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "OPEN錢包/ICASH", rate: 3.0, note: "需切換至 [集精選]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商大多排除在回饋之外，或回饋極低。" }
+                            ]
+                        },
+                        {
+                            name: "FamilyMart 全家便利商店",
+                            category: "便利商店",
+                            rewards: [
+                                { cardName: "台新玫瑰太陽", plan: "天天刷", method: "台新Pay", rate: 3.8, note: "注意！必須綁定「台新Pay」掃碼支付，刷實體卡僅 0.3%。" },
+                                { cardName: "國泰 Cube", plan: "集精選", method: "FamiPay", rate: 3.0, note: "需切換至 [集精選]。" },
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商大多排除在回饋之外。" }
+                            ]
+                        },
+                        {
+                            name: "Hi-Life 萊爾富",
+                            category: "便利商店",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "一般", method: "HiPay", rate: 0, note: "一般消費排除超商，建議使用其他支付工具。" },
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "萊爾富不在 [集精選] 名單中，僅一般回饋。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "萊爾富不在 [天天刷] 名單中，僅一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "OK Mart OK超商",
+                            category: "便利商店",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "一般", method: "Line Pay", rate: 0, note: "超商不列入一般回饋。" },
+                                { cardName: "國泰 Cube", plan: "一般", method: "實體卡", rate: 0.3, note: "OK超商不在 [集精選] 名單中。" },
+                                { cardName: "台新玫瑰太陽", plan: "一般", method: "實體卡", rate: 0.3, note: "OK超商不在 [天天刷] 名單中。" }
+                            ]
+                        },
+
+                        // --- 影城 ---
                         {
                             name: "新光影城 Shin Kong Cinemas",
                             category: "電影院",
@@ -183,7 +221,7 @@
                             ]
                         },
 
-                        // --- 國籍航空 (新!) ---
+                        // --- 國籍航空 ---
                         {
                             name: "China Airlines 中華航空",
                             category: "航空公司",
@@ -221,7 +259,7 @@
                             ]
                         },
 
-                        // --- 日韓航空 (新!) ---
+                        // --- 日韓航空 ---
                         {
                             name: "Japan Airlines 日本航空 (JAL)",
                             category: "航空公司",
@@ -259,7 +297,7 @@
                             ]
                         },
 
-                        // --- 其他外籍航空 (新!) ---
+                        // --- 其他外籍航空 ---
                         {
                             name: "Cathay Pacific 國泰航空",
                             category: "航空公司",
@@ -315,7 +353,7 @@
                             ]
                         },
 
-                        // --- 訂房/旅遊平台 (新!) ---
+                        // --- 訂房/旅遊平台 ---
                         {
                             name: "Agoda",
                             category: "訂房網",
@@ -380,7 +418,7 @@
                             ]
                         },
 
-                        // --- 境外電商 (新!) ---
+                        // --- 境外電商 ---
                         {
                             name: "Coupang 酷澎 (台灣)",
                             category: "網購平台",
@@ -400,7 +438,7 @@
                             ]
                         },
 
-                        // --- 超市/賣場 (新! 分開列出) ---
+                        // --- 超市/賣場 ---
                         {
                             name: "Carrefour 家樂福",
                             category: "超市量販",
@@ -426,6 +464,15 @@
                                 { cardName: "國泰 Cube", plan: "一般", method: "PX Pay", rate: 0, note: "全聯已取消 Cube 高回饋。" },
                                 { cardName: "台新玫瑰太陽", plan: "一般", method: "實體", rate: 0, note: "全聯不列入一般回饋。" },
                                 { cardName: "富邦 J 卡", plan: "一般", method: "實體", rate: 0, note: "全聯不列入一般回饋。" }
+                            ]
+                        },
+                        {
+                            name: "Costco 好市多",
+                            category: "超市量販",
+                            rewards: [
+                                { cardName: "富邦 J 卡", plan: "X", method: "X", rate: 0, note: "僅限富邦 Costco 聯名卡。" },
+                                { cardName: "國泰 Cube", plan: "X", method: "X", rate: 0, note: "僅限富邦 Costco 聯名卡。" },
+                                { cardName: "台新玫瑰太陽", plan: "X", method: "X", rate: 0, note: "僅限富邦 Costco 聯名卡。" }
                             ]
                         },
 
@@ -530,7 +577,7 @@
                     if (category.includes('廉價航空')) return 'fa-solid fa-plane-slash';
                     if (category.includes('網購') || category.includes('訂房')) return 'fa-solid fa-laptop';
                     if (category.includes('電影')) return 'fa-solid fa-film';
-                    if (category.includes('超市')) return 'fa-solid fa-basket-shopping';
+                    if (category.includes('超市') || category.includes('便利商店')) return 'fa-solid fa-basket-shopping';
                     if (category.includes('百貨')) return 'fa-solid fa-bag-shopping';
                     return 'fa-solid fa-store';
                 },
